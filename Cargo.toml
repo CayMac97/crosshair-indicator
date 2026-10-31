@@ -1,0 +1,11 @@
+[package]
+name = "horizon-mod-crosshair-indicator"
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+authors = ["CayMac"]
+description = "Crosshair Indicator for Horizon — 1:1 AmerDz01 PvP indicator: dynamic target awareness feedback at your crosshair when in attack reach."
+repository = "https://github.com/CayMac97/crosshair-indicator"
+
+[lib]
+path = "src/lib.rs"
