@@ -12,6 +12,7 @@ pub const KEY_TOGGLE_LABEL: &str = "Toggle Crosshair Indicator";
 pub const KEY_TOGGLE_DEFAULT: &str = "key.keyboard.unknown";
 
 // Color constants (0xAARRGGBB)
+pub const COLOR_WHITE: u32 = 0xFFFFFFFF;  // Classic PvP White
 pub const COLOR_GREEN: u32 = 0xFF00FF7F;  // Spring Green (ready)
 pub const COLOR_ORANGE: u32 = 0xFFFF8C00; // Dark Orange (charging)
 pub const COLOR_RED: u32 = 0xFFFF3333;    // Vivid Red
@@ -52,6 +53,7 @@ impl Style {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ColorTheme {
+    White,
     Dynamic,
     Red,
     Pink,
@@ -61,17 +63,19 @@ pub enum ColorTheme {
 
 impl ColorTheme {
     pub fn from_index(i: usize) -> Self {
-        match i % 5 {
-            0 => Self::Dynamic,
-            1 => Self::Red,
-            2 => Self::Pink,
-            3 => Self::Cyan,
+        match i % 6 {
+            0 => Self::White,
+            1 => Self::Dynamic,
+            2 => Self::Red,
+            3 => Self::Pink,
+            4 => Self::Cyan,
             _ => Self::Gold,
         }
     }
 
     pub fn name(self) -> &'static str {
         match self {
+            Self::White => "Classic White (Default)",
             Self::Dynamic => "Dynamic (Green/Orange)",
             Self::Red => "Combat Red",
             Self::Pink => "Pink Aesthetic",
@@ -82,6 +86,7 @@ impl ColorTheme {
 
     pub fn resolve(self, charged: bool) -> u32 {
         match self {
+            Self::White => COLOR_WHITE,
             Self::Dynamic => {
                 if charged {
                     COLOR_GREEN
@@ -110,7 +115,7 @@ impl Default for Settings {
         Self {
             enabled: true,
             style: Style::Brackets,
-            theme: ColorTheme::Dynamic,
+            theme: ColorTheme::White,
             show_cooldown: true,
         }
     }

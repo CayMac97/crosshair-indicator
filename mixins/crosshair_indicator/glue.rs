@@ -27,9 +27,10 @@ pub(super) fn on_hud(game: &mut Game<'_>, batch: &mut HudBatch, _corners: &mut C
         return;
     }
 
-    // Exact center pixel of vanilla crosshair (15x15 sprite centred at (w - 15)/2, (h - 15)/2)
-    let cx = ((wi - 15.0) / 2.0 + 7.0).floor();
-    let cy = ((hi - 15.0) / 2.0 + 7.0).floor();
+    // Exact center pixel of vanilla crosshair (15x15 sprite centred at floor((w - 15)/2), floor((h - 15)/2))
+    // In vanilla Horizon, sprite top-left is ((wi - 15) / 2).floor(), center pixel is at offset +7.0
+    let cx = ((wi - 15.0) / 2.0).floor() + 7.0;
+    let cy = ((hi - 15.0) / 2.0).floor() + 7.0;
 
     // Check attack strength / weapon cooldown
     let speed = game.main_hand_attack_speed();
@@ -45,36 +46,36 @@ pub(super) fn on_hud(game: &mut Game<'_>, batch: &mut HudBatch, _corners: &mut C
 
         match s.style {
             m::Style::Brackets => {
-                // Four corner pips hugging the crosshair at +/- 8 pixels
-                // Top-Left corner
-                game.native_fill(batch, [cx - 8.0, cy - 8.0, 3.0, 1.0], color);
-                game.native_fill(batch, [cx - 8.0, cy - 8.0, 1.0, 3.0], color);
-                // Top-Right corner
-                game.native_fill(batch, [cx + 6.0, cy - 8.0, 3.0, 1.0], color);
-                game.native_fill(batch, [cx + 8.0, cy - 8.0, 1.0, 3.0], color);
-                // Bottom-Left corner
-                game.native_fill(batch, [cx - 8.0, cy + 8.0, 3.0, 1.0], color);
-                game.native_fill(batch, [cx - 8.0, cy + 6.0, 1.0, 3.0], color);
-                // Bottom-Right corner
-                game.native_fill(batch, [cx + 6.0, cy + 8.0, 3.0, 1.0], color);
-                game.native_fill(batch, [cx + 8.0, cy + 6.0, 1.0, 3.0], color);
+                // Exact PvP target brackets hugging the vanilla 9x9 crosshair inside corners:
+                // Top-Left corner:
+                game.native_fill(batch, [cx - 3.0, cy - 3.0, 2.0, 1.0], color);
+                game.native_fill(batch, [cx - 3.0, cy - 2.0, 1.0, 1.0], color);
+                // Top-Right corner:
+                game.native_fill(batch, [cx + 2.0, cy - 3.0, 2.0, 1.0], color);
+                game.native_fill(batch, [cx + 3.0, cy - 2.0, 1.0, 1.0], color);
+                // Bottom-Left corner:
+                game.native_fill(batch, [cx - 3.0, cy + 2.0, 1.0, 1.0], color);
+                game.native_fill(batch, [cx - 3.0, cy + 3.0, 2.0, 1.0], color);
+                // Bottom-Right corner:
+                game.native_fill(batch, [cx + 3.0, cy + 2.0, 1.0, 1.0], color);
+                game.native_fill(batch, [cx + 2.0, cy + 3.0, 2.0, 1.0], color);
             }
             m::Style::CenterDot => {
-                // Bright 2x2 dot centered inside crosshair gap
-                game.native_fill(batch, [cx - 0.5, cy - 0.5, 2.0, 2.0], color);
+                // Bright 1x1 dot centered inside crosshair
+                game.native_fill(batch, [cx, cy, 1.0, 1.0], color);
             }
             m::Style::Diamond => {
                 // Diamond accent pips around the crosshair extremities
-                game.native_fill(batch, [cx, cy - 9.0, 1.0, 2.0], color); // Top
-                game.native_fill(batch, [cx, cy + 8.0, 1.0, 2.0], color); // Bottom
-                game.native_fill(batch, [cx - 9.0, cy, 2.0, 1.0], color); // Left
-                game.native_fill(batch, [cx + 8.0, cy, 2.0, 1.0], color); // Right
+                game.native_fill(batch, [cx, cy - 5.0, 1.0, 1.0], color);
+                game.native_fill(batch, [cx, cy + 5.0, 1.0, 1.0], color);
+                game.native_fill(batch, [cx - 5.0, cy, 1.0, 1.0], color);
+                game.native_fill(batch, [cx + 5.0, cy, 1.0, 1.0], color);
             }
             m::Style::Chevron => {
-                // Tactical target chevron (inverted triangle) above crosshair
-                game.native_fill(batch, [cx - 2.0, cy - 10.0, 5.0, 1.0], color);
-                game.native_fill(batch, [cx - 1.0, cy - 9.0, 3.0, 1.0], color);
-                game.native_fill(batch, [cx, cy - 8.0, 1.0, 1.0], color);
+                // Tactical target chevron above crosshair
+                game.native_fill(batch, [cx - 2.0, cy - 6.0, 5.0, 1.0], color);
+                game.native_fill(batch, [cx - 1.0, cy - 5.0, 3.0, 1.0], color);
+                game.native_fill(batch, [cx, cy - 4.0, 1.0, 1.0], color);
             }
         }
     }
@@ -83,7 +84,7 @@ pub(super) fn on_hud(game: &mut Game<'_>, batch: &mut HudBatch, _corners: &mut C
     if s.show_cooldown && !charged {
         let bar_w = 16.0;
         let bar_h = 2.0;
-        let bar_x = cx - bar_w / 2.0 + 0.5;
+        let bar_x = (cx - 8.0).floor();
         let bar_y = cy + 10.0;
         // Background
         game.native_fill(batch, [bar_x, bar_y, bar_w, bar_h], m::COLOR_GRAY);
