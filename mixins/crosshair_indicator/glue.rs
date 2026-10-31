@@ -23,13 +23,13 @@ pub(super) fn on_hud(game: &mut Game<'_>, batch: &mut HudBatch, _corners: &mut C
     }
 
     let (wi, hi) = game.gui_size();
-    if wi <= 0 || hi <= 0 {
+    if wi <= 0.0 || hi <= 0.0 {
         return;
     }
 
     // Exact center pixel of vanilla crosshair (15x15 sprite centred at (w - 15)/2, (h - 15)/2)
-    let cx = ((wi - 15) / 2 + 7) as f32;
-    let cy = ((hi - 15) / 2 + 7) as f32;
+    let cx = ((wi - 15.0) / 2.0 + 7.0).floor();
+    let cy = ((hi - 15.0) / 2.0 + 7.0).floor();
 
     // Check attack strength / weapon cooldown
     let speed = game.main_hand_attack_speed();
